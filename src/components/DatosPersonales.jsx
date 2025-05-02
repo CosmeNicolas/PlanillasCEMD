@@ -1,20 +1,44 @@
 import React from 'react';
-// src/components/DatosPersonales.jsx
-import { useState } from 'react';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
 
 const DatosPersonales = ({ datos, setDatos }) => {
-  const editarDatos = () => {
-    const nombre = prompt('Apellido y Nombre:', datos.nombre);
-    const edad = prompt('Edad:', datos.edad);
-    const peso = prompt('Peso:', datos.peso);
-    const objetivo = prompt('Objetivo:', datos.objetivo);
-
-    setDatos({
-      nombre: nombre || datos.nombre,
-      edad: edad || datos.edad,
-      peso: peso || datos.peso,
-      objetivo: objetivo || datos.objetivo,
+  const editarDatos = async () => {
+    const { value: formValues } = await MySwal.fire({
+      title: 'Editar Datos Personales',
+      html:
+        `<input id="swal-nombre" class="swal2-input" placeholder="Apellido y Nombre" value="${datos.nombre}" />` +
+        `<input id="swal-edad" class="swal2-input" placeholder="Edad" value="${datos.edad}" type="number" />` +
+        `<input id="swal-peso" class="swal2-input" placeholder="Peso" value="${datos.peso}" type="number" />` +
+        `<input id="swal-objetivo" class="swal2-input" placeholder="Objetivo" value="${datos.objetivo}" />`,
+      focusConfirm: false,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
+      showCancelButton: true,
+      background: '#191825',
+      color: '#FAF1E6',
+      confirmButtonColor: '#2AB0A1',
+      cancelButtonColor: '#E966A0',
+      preConfirm: () => {
+        return {
+          nombre: document.getElementById('swal-nombre').value,
+          edad: document.getElementById('swal-edad').value,
+          peso: document.getElementById('swal-peso').value,
+          objetivo: document.getElementById('swal-objetivo').value,
+        };
+      }
     });
+
+    if (formValues) {
+      setDatos({
+        nombre: formValues.nombre || datos.nombre,
+        edad: formValues.edad || datos.edad,
+        peso: formValues.peso || datos.peso,
+        objetivo: formValues.objetivo || datos.objetivo,
+      });
+    }
   };
 
   return (

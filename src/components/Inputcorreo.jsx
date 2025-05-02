@@ -1,24 +1,43 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Spinner } from '@nextui-org/react';
+import Swal from 'sweetalert2';
 import { generarPDF } from '../utils/generarPDF';
 
 const InputCorreo = ({ datos, ejercicios }) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const estiloSwal = {
+    background: '#191825',
+    color: '#FAF1E6',
+    confirmButtonColor: '#2AB0A1',
+    cancelButtonColor: '#E966A0',
+  };
+
   const enviarCorreo = async () => {
     if (!email.includes('@')) {
-      alert('Por favor ingresá un correo válido.');
-      return;
+      return Swal.fire({
+        icon: 'warning',
+        title: 'Correo inválido',
+        text: 'Por favor ingresá un correo electrónico válido.',
+        ...estiloSwal,
+      });
     }
 
+    /* if (!datos || !ejercicios || ejercicios.length === 0) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Faltan datos',
+        text: 'Debe completar los datos personales y ejercicios.',
+        ...estiloSwal,
+      });
+    }
+ */
     setLoading(true);
 
     try {
       generarPDF(datos, ejercicios, async (doc) => {
         const pdfBlob = doc.output('blob');
-
         const formData = new FormData();
         formData.append('emailDestino', email);
         formData.append('pdf', pdfBlob, 'Planilla_Ejercicios.pdf');
@@ -27,24 +46,37 @@ const InputCorreo = ({ datos, ejercicios }) => {
           `${import.meta.env.VITE_BACKEND_URL}/api/correo/enviar-email`,
           formData,
           {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+            headers: { 'Content-Type': 'multipart/form-data' },
           }
         );
 
         if (response.status === 200) {
-          alert('✅ Correo enviado con éxito');
+          Swal.fire({
+            icon: 'success',
+            title: 'Correo enviado',
+            text: '✅ La planilla fue enviada con éxito.',
+            ...estiloSwal,
+          });
           setEmail('');
         } else {
-          alert('❌ Error al enviar el correo');
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '❌ Ocurrió un error al enviar el correo.',
+            ...estiloSwal,
+          });
         }
 
         setLoading(false);
       });
     } catch (error) {
       console.error('Error al enviar:', error);
-      alert('❌ Hubo un problema al enviar el correo');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: '❌ Hubo un problema al enviar el correo.',
+        ...estiloSwal,
+      });
       setLoading(false);
     }
   };
@@ -62,9 +94,32 @@ const InputCorreo = ({ datos, ejercicios }) => {
       <button
         onClick={enviarCorreo}
         disabled={loading}
-        className="bg-[#2AB0A1] hover:bg-[#218C85] text-white px-4 py-2 rounded-full transition flex items-center justify-center w-[180px]"
+        className={`bg-[#2AB0A1] text-white px-4 py-2 rounded-full transition flex items-center justify-center w-[180px] ${
+          loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#218C85]'
+        }`}
       >
-        {loading ? <Spinner size="sm" color="white" /> : 'Enviar por Email'}
+        {loading ? (
+          <svg
+            className="animate-spin h-5 w-5 text-white mr-2"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            />
+          </svg>
+        ) : null}
+        {loading ? 'Enviando...' : 'Enviar por Email'}
       </button>
     </div>
   );

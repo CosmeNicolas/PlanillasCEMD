@@ -8,38 +8,53 @@ const FormularioEjercicio = ({ onAgregar }) => {
   const [repsIniciales, setRepsIniciales] = useState('');
 
   const ejerciciosPredefinidos = [
-    "Sentadilla",
+    "Abdominales",
+    'Elevaciones de tronco',
+    'Prensa 40º',
+    'Prensa horizontal',
+    'Flexores',
     "Press de banca",
-    "Peso muerto",
-    "Remo con barra",
-    "Curl de bíceps",
-    "Press militar",
-    "Zancadas",
+    "Remo",
+    "Pantorrilas",
+    "Biceps Combinados",
+    "Biceps",
+    "Triceps",
     "Plancha"
   ];
 
   const manejarEnvio = (e) => {
     e.preventDefault();
 
-    if (!nombre || !peso || !series || !repsIniciales) {
+    if (!nombre || !series || (!peso && !nombre.toLowerCase().includes('plancha')) || !repsIniciales) {
       alert('Completa todos los campos correctamente');
       return;
     }
 
-    const rep = parseInt(repsIniciales);
     const sesiones = [];
     let totalSesiones = 0;
-    let r = rep;
-    let pesoActual = parseFloat(peso);
+    const s = parseInt(series);
+    const isPlancha = nombre.toLowerCase().includes('plancha');
 
-    while (totalSesiones < 12) {
-      sesiones.push(`${pesoActual}kg ${series}x${r}`);
-      totalSesiones++;
-      if (r >= 10 && totalSesiones < 12) {
-        pesoActual += 2.5;
-        r = rep;
-      } else {
-        r += 2;
+    if (isPlancha) {
+      let segundos = parseInt(repsIniciales);
+      while (totalSesiones < 12) {
+        sesiones.push(`${s}x${segundos}''`);
+        segundos += 5;
+        totalSesiones++;
+      }
+    } else {
+      let r = parseInt(repsIniciales);
+      let pesoActual = parseFloat(peso);
+
+      while (totalSesiones < 12) {
+        sesiones.push(`${pesoActual}kg ${s}x${r}`);
+        totalSesiones++;
+        if (r >= 10 && totalSesiones < 12) {
+          pesoActual += 2.5;
+          r = parseInt(repsIniciales);
+        } else {
+          r += 2;
+        }
       }
     }
 
@@ -65,15 +80,17 @@ const FormularioEjercicio = ({ onAgregar }) => {
           onChange={(e) => setNombre(e.target.value)}
           required
         />
-        <input
-          type="number"
-          className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-          placeholder="Peso (kg)"
-          min={1}
-          value={peso}
-          onChange={(e) => setPeso(e.target.value)}
-          required
-        />
+        {!nombre.toLowerCase().includes('plancha') && (
+          <input
+            type="number"
+            className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            placeholder="Peso (kg)"
+            min={1}
+            value={peso}
+            onChange={(e) => setPeso(e.target.value)}
+            required
+          />
+        )}
         <input
           type="number"
           className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
@@ -86,7 +103,7 @@ const FormularioEjercicio = ({ onAgregar }) => {
         <input
           type="number"
           className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-          placeholder="Reps iniciales"
+          placeholder={nombre.toLowerCase().includes('plancha') ? "Segundos" : "Reps iniciales"}
           min={1}
           value={repsIniciales}
           onChange={(e) => setRepsIniciales(e.target.value)}

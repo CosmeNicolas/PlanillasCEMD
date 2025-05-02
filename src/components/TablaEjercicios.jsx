@@ -1,3 +1,4 @@
+// src/components/TablaEjercicios.jsx
 import React from 'react';
 
 const TablaEjercicios = ({ ejercicios, setEjercicios }) => {

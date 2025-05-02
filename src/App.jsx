@@ -1,45 +1,42 @@
+// src/App.jsx
 import React, { useState } from 'react';
-import DatosPersonales from './components/DatosPersonales';
-import FormularioEjercicio from './components/FormulariosEjercicios';
-import AccionesPlanilla from './components/AccionesPlanilla';
-import InputCorreo from './components/Inputcorreo';
+import FilaFija from './components/FilaFija';
 import TablaEjercicios from './components/TablaEjercicios';
+import FormularioEjercicio from './components/FormulariosEjercicios';
+import ExportarPDF from './utils/ExportarPDF';
+import InputCorreo from './components/Inputcorreo';
+import DatosPersonales from './components/DatosPersonales';
 
-import Footer from './UI/Footer';
-import NavBar from './UI/NavBar';
-
-const App = () => {
-  const [datos, setDatos] = useState({
-    nombre: 'John Doe',
-    edad: '30',
-    peso: '75',
-    objetivo: 'Aumentar fuerza',
-  });
-
+function App() {
+  const [datos, setDatos] = useState({ nombre: '', edad: '', peso: '', objetivo: '' });
   const [ejercicios, setEjercicios] = useState([]);
 
-  const agregarEjercicio = (nuevo) => {
-    setEjercicios([...ejercicios, nuevo]);
+  const agregarFilaFija = (fila) => {
+    setEjercicios(prev => {
+      const index = prev.findIndex(e => e.ejercicio === fila.ejercicio);
+      if (index !== -1) {
+        const copia = [...prev];
+        copia[index] = fila;
+        return copia;
+      } else {
+        return [fila, ...prev];
+      }
+    });
   };
 
   return (
-    <div className="bg-[#F4F4F4] dark:bg-[#121212] text-black dark:text-white min-h-screen transition-colors duration-300">
-      <NavBar />
-
-      <main className="py-6 px-4 max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold text-center text-[#2AB0A1] dark:text-[#4BE3D5] mb-6">
-         Progresión de Ejercicios 🏋🏽‍♂️
-        </h1>
-
-        <DatosPersonales datos={datos} setDatos={setDatos} />
-        <FormularioEjercicio onAgregar={agregarEjercicio} />
-        <TablaEjercicios ejercicios={ejercicios} setEjercicios={setEjercicios} />
-        <AccionesPlanilla datos={datos} ejercicios={ejercicios} setEjercicios={setEjercicios} />
+    <div className="container mx-auto p-4">
+      <DatosPersonales datos={datos} setDatos={setDatos} />
+      <FilaFija titulo="Entrada en Calor" onAgregarFila={agregarFilaFija} />
+      <FilaFija titulo="Vuelta a la Calma" onAgregarFila={agregarFilaFija} />
+      <FormularioEjercicio onAgregar={(ej) => setEjercicios([...ejercicios, ej])} />
+      <TablaEjercicios ejercicios={ejercicios} setEjercicios={setEjercicios} />
+      <div className="flex justify-center gap-4">
+        <ExportarPDF datos={datos} ejercicios={ejercicios} />
         <InputCorreo datos={datos} ejercicios={ejercicios} />
-      </main>
-    <Footer/>
+      </div>
     </div>
   );
-};
+}
 
 export default App;
