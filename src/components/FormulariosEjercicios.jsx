@@ -1,6 +1,6 @@
-// src/components/FormularioEjercicio.jsx
 import { useState } from 'react';
 import React from 'react';
+
 const FormularioEjercicio = ({ onAgregar }) => {
   const [nombre, setNombre] = useState('');
   const [peso, setPeso] = useState('');
@@ -53,13 +53,13 @@ const FormularioEjercicio = ({ onAgregar }) => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow-md mb-6">
-      <h3 className="text-lg font-semibold text-center mb-4">Cargar nuevo ejercicio</h3>
+    <div className="bg-white dark:bg-[#1f1f1f] p-6 rounded-xl shadow-md mb-6">
+      <h3 className="text-lg font-semibold text-center mb-4 text-[#2AB0A1] dark:text-white">Cargar nuevo ejercicio</h3>
       <form onSubmit={manejarEnvio} className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <input
           type="text"
           list="ejercicios"
-          className="border rounded-lg p-2"
+          className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
           placeholder="Ejercicio"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
@@ -67,7 +67,7 @@ const FormularioEjercicio = ({ onAgregar }) => {
         />
         <input
           type="number"
-          className="border rounded-lg p-2"
+          className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
           placeholder="Peso (kg)"
           min={1}
           value={peso}
@@ -76,7 +76,7 @@ const FormularioEjercicio = ({ onAgregar }) => {
         />
         <input
           type="number"
-          className="border rounded-lg p-2"
+          className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
           placeholder="Series"
           min={1}
           value={series}
@@ -85,7 +85,7 @@ const FormularioEjercicio = ({ onAgregar }) => {
         />
         <input
           type="number"
-          className="border rounded-lg p-2"
+          className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
           placeholder="Reps iniciales"
           min={1}
           value={repsIniciales}
@@ -93,9 +93,12 @@ const FormularioEjercicio = ({ onAgregar }) => {
           required
         />
         <div className="md:col-span-4 flex justify-center">
-        <button className="bg-[#2AB0A1] hover:bg-[#218C85] text-white px-4 py-2 rounded-full transition">
-  Agregar
-</button>
+          <button
+            type="submit"
+            className="bg-[#2AB0A1] hover:bg-[#218C85] text-white px-6 py-2 rounded-full transition font-semibold"
+          >
+            Agregar
+          </button>
         </div>
       </form>
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const TablaEjercicios = ({ ejercicios, setEjercicios }) => {
   const eliminarFila = (index) => {
@@ -19,10 +19,10 @@ const TablaEjercicios = ({ ejercicios, setEjercicios }) => {
   const headers = ["Ejercicio", ...Array.from({ length: 12 }, (_, i) => `Sesión ${i + 1}`), "Eliminar"];
 
   return (
-    <div className="overflow-x-auto bg-white p-4 rounded-xl shadow-md mb-6">
+    <div className="overflow-x-auto bg-white dark:bg-[#1f1f1f] p-4 rounded-xl shadow-md mb-6">
       <table className="w-full text-sm text-center border-collapse">
         <thead>
-        <tr className="bg-[#2AB0A1] text-white text-xs md:text-sm">
+          <tr className="bg-[#2AB0A1] text-white text-xs md:text-sm">
             {headers.map((h, i) => (
               <th key={i} className="p-2 border">{h}</th>
             ))}
@@ -30,9 +30,10 @@ const TablaEjercicios = ({ ejercicios, setEjercicios }) => {
         </thead>
         <tbody>
           {ejercicios.map((fila, i) => (
-            <tr key={i} className={i % 2 === 0 ? "bg-gray-50" : ""}>
+            <tr key={i} className={i % 2 === 0 ? "bg-gray-50 dark:bg-[#2c2c2c]" : "dark:bg-[#1f1f1f]"}>
               <td className="border p-1">
-              <input className="w-full bg-transparent text-center text-[#333] font-semibold focus:outline-none" 
+                <input
+                  className="w-full bg-transparent text-center text-[#333] dark:text-white font-semibold focus:outline-none"
                   type="text"
                   value={fila.ejercicio}
                   onChange={(e) => actualizarCelda(i, 0, e.target.value)}
@@ -42,7 +43,7 @@ const TablaEjercicios = ({ ejercicios, setEjercicios }) => {
                 <td key={j} className="border p-1">
                   <input
                     type="text"
-                  className="w-full bg-transparent text-center text-[#333] font-semibold focus:outline-none"
+                    className="w-full bg-transparent text-center text-[#333] dark:text-white font-semibold focus:outline-none"
                     value={s}
                     onChange={(e) => actualizarCelda(i, j + 1, e.target.value)}
                   />
@@ -64,4 +65,5 @@ const TablaEjercicios = ({ ejercicios, setEjercicios }) => {
     </div>
   );
 };
-export default TablaEjercicios
+
+export default TablaEjercicios;
