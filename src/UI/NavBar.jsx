@@ -21,11 +21,11 @@ const NavBar = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
-  const menuItems = [
+ /*  const menuItems = [
     { path: '/', name: 'Inicio' },
     { path: '/planilla', name: 'Planilla' },
     { path: '/contacto', name: 'Contacto' },
-  ];
+  ]; */
 
   return (
     <>
@@ -44,7 +44,7 @@ const NavBar = () => {
 
         {/* LINKS CENTRADOS */}
         <NavbarContent className="hidden sm:flex flex-1 justify-center gap-6">
-          {menuItems.map((item) => (
+         {/*  {menuItems.map((item) => (
             <NavbarItem key={item.path} isActive={location.pathname === item.path}>
               <Link
                 to={item.path}
@@ -57,7 +57,7 @@ const NavBar = () => {
                 {item.name}
               </Link>
             </NavbarItem>
-          ))}
+          ))} */}
         </NavbarContent>
 
         {/* BOTÓN DARK MODE */}
