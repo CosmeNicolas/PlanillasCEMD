@@ -6,6 +6,8 @@ const FormularioEjercicio = ({ onAgregar }) => {
   const [peso, setPeso] = useState('');
   const [series, setSeries] = useState('');
   const [repsIniciales, setRepsIniciales] = useState('');
+  const [entradaCalor, setEntradaCalor] = useState(5);
+  const [vueltaCalma, setVueltaCalma] = useState(5);
 
   const ejerciciosPredefinidos = [
     "Abdominales",
@@ -25,7 +27,10 @@ const FormularioEjercicio = ({ onAgregar }) => {
   const manejarEnvio = (e) => {
     e.preventDefault();
 
-    if (!nombre || !series || (!peso && !nombre.toLowerCase().includes('plancha')) || !repsIniciales) {
+    const nombreLower = nombre.toLowerCase();
+    const isPlancha = nombreLower.includes('plancha');
+
+    if (!nombre || !series || (!peso && !isPlancha) || !repsIniciales) {
       alert('Completa todos los campos correctamente');
       return;
     }
@@ -33,7 +38,6 @@ const FormularioEjercicio = ({ onAgregar }) => {
     const sesiones = [];
     let totalSesiones = 0;
     const s = parseInt(series);
-    const isPlancha = nombre.toLowerCase().includes('plancha');
 
     if (isPlancha) {
       let segundos = parseInt(repsIniciales);
@@ -45,7 +49,6 @@ const FormularioEjercicio = ({ onAgregar }) => {
     } else {
       let r = parseInt(repsIniciales);
       let pesoActual = parseFloat(peso);
-
       while (totalSesiones < 12) {
         sesiones.push(`${pesoActual}kg ${s}x${r}`);
         totalSesiones++;
@@ -59,17 +62,63 @@ const FormularioEjercicio = ({ onAgregar }) => {
     }
 
     onAgregar({ ejercicio: nombre, sesiones });
-
-    // Limpiar formulario
     setNombre('');
     setPeso('');
     setSeries('');
     setRepsIniciales('');
   };
 
+  const agregarFija = (tipo, valor) => {
+    onAgregar({
+      ejercicio: tipo,
+      sesiones: Array(12).fill(`${valor} min`)
+    });
+  };
+
   return (
     <div className="bg-white dark:bg-[#1f1f1f] p-6 rounded-xl shadow-md mb-6">
       <h3 className="text-lg font-semibold text-center mb-4 text-[#2AB0A1] dark:text-white">Cargar nuevo ejercicio</h3>
+
+      {/* Entrada en Calor y Vuelta a la Calma */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="flex flex-col">
+          <label className="text-[#2AB0A1] dark:text-white font-semibold mb-1 text-sm">Entrada en Calor</label>
+          <select
+            value={entradaCalor}
+            onChange={(e) => {
+              const valor = parseInt(e.target.value);
+              setEntradaCalor(valor);
+              agregarFija('Entrada en Calor', valor);
+            }}
+            className="p-2 border border-[#2AB0A1] rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
+          >
+            {[...Array(6)].map((_, i) => {
+              const val = 5 + i;
+              return <option key={val} value={val}>{val} min</option>;
+            })}
+          </select>
+        </div>
+
+        <div className="flex flex-col">
+          <label className="text-[#2AB0A1] dark:text-white font-semibold mb-1 text-sm">Vuelta a la Calma</label>
+          <select
+            value={vueltaCalma}
+            onChange={(e) => {
+              const valor = parseInt(e.target.value);
+              setVueltaCalma(valor);
+              agregarFija('Vuelta a la Calma', valor);
+            }}
+            className="p-2 border border-[#2AB0A1] rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
+          >
+            {[...Array(6)].map((_, i) => {
+              const val = 5 + i;
+              return <option key={val} value={val}>{val} min</option>;
+            })}
+          </select>
+        </div>
+      </div>
+
+      {/* Formulario ejercicio progresivo */}
       <form onSubmit={manejarEnvio} className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <input
           type="text"
@@ -85,7 +134,7 @@ const FormularioEjercicio = ({ onAgregar }) => {
             type="number"
             className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             placeholder="Peso (kg)"
-            min={1}
+            min={0}
             value={peso}
             onChange={(e) => setPeso(e.target.value)}
             required
@@ -109,6 +158,7 @@ const FormularioEjercicio = ({ onAgregar }) => {
           onChange={(e) => setRepsIniciales(e.target.value)}
           required
         />
+
         <div className="md:col-span-4 flex justify-center">
           <button
             type="submit"

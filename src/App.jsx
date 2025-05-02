@@ -6,6 +6,8 @@ import FormularioEjercicio from './components/FormulariosEjercicios';
 import ExportarPDF from './utils/ExportarPDF';
 import InputCorreo from './components/Inputcorreo';
 import DatosPersonales from './components/DatosPersonales';
+import Footer from './UI/Footer';
+import Navbar from './UI/Navbar'; // Asegúrate que el archivo se llame Navbar.jsx
 
 function App() {
   const [datos, setDatos] = useState({ nombre: '', edad: '', peso: '', objetivo: '' });
@@ -25,16 +27,18 @@ function App() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <DatosPersonales datos={datos} setDatos={setDatos} />
-      <FilaFija titulo="Entrada en Calor" onAgregarFila={agregarFilaFija} />
-      <FilaFija titulo="Vuelta a la Calma" onAgregarFila={agregarFilaFija} />
-      <FormularioEjercicio onAgregar={(ej) => setEjercicios([...ejercicios, ej])} />
-      <TablaEjercicios ejercicios={ejercicios} setEjercicios={setEjercicios} />
-      <div className="flex justify-center gap-4">
-        <ExportarPDF datos={datos} ejercicios={ejercicios} />
-        <InputCorreo datos={datos} ejercicios={ejercicios} />
-      </div>
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-grow container mx-auto p-4">
+        <DatosPersonales datos={datos} setDatos={setDatos} />
+        <FormularioEjercicio onAgregar={(ej) => setEjercicios([...ejercicios, ej])} />
+        <TablaEjercicios ejercicios={ejercicios} setEjercicios={setEjercicios} />
+        <div className="flex justify-center gap-4 mt-6">
+          <ExportarPDF datos={datos} ejercicios={ejercicios} />
+          <InputCorreo datos={datos} ejercicios={ejercicios} />
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }
