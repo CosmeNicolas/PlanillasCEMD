@@ -35,7 +35,7 @@ const App = () => {
         <FormularioEjercicio onAgregar={agregarEjercicio} />
         <TablaEjercicios ejercicios={ejercicios} setEjercicios={setEjercicios} />
         <AccionesPlanilla datos={datos} ejercicios={ejercicios} setEjercicios={setEjercicios} />
-        <InputCorreo />
+        <InputCorreo datos={datos} ejercicios={ejercicios} />
       </main>
     <Footer/>
     </div>
