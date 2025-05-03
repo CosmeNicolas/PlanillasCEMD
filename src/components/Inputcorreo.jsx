@@ -43,7 +43,7 @@ const InputCorreo = ({ datos, ejercicios }) => {
         formData.append('pdf', pdfBlob, 'Planilla_Ejercicios.pdf');
 
         const response = await axios.post(
-          `${import.meta.env.VITE_BACKEND_URL}/api/correo/enviar-email`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/correo/email`,
           formData,
           {
             headers: { 'Content-Type': 'multipart/form-data' },
