@@ -1,6 +1,5 @@
 // src/App.jsx
 import React, { useState } from 'react';
-import FilaFija from './components/FilaFija';
 import TablaEjercicios from './components/TablaEjercicios';
 import FormularioEjercicio from './components/FormulariosEjercicios';
 import ExportarPDF from './utils/ExportarPDF';
