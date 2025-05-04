@@ -1,6 +1,6 @@
 // src/components/ui/Footer.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+/* import { Link } from 'react-router-dom'; */
 import { Image } from '@nextui-org/react';
 import logo from '../img/cemd-logo-1.png';
 

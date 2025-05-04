@@ -6,7 +6,7 @@ import ExportarPDF from './utils/ExportarPDF';
 import InputCorreo from './components/Inputcorreo';
 import DatosPersonales from './components/DatosPersonales';
 import Footer from '../src/UI/Footer.jsx';
-import Navbar from '../src/UI/Navbar.jsx'
+/* import Navbar from '../src/UI/Navbar.jsx' */
 
 function App() {
   const [datos, setDatos] = useState({ nombre: '', edad: '', peso: '', objetivo: '' });
@@ -27,7 +27,7 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
+      {/* <Navbar /> */}
       <main className="flex-grow container mx-auto p-4">
         <DatosPersonales datos={datos} setDatos={setDatos} />
         <FormularioEjercicio onAgregar={(ej) => setEjercicios([...ejercicios, ej])} />
