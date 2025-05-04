@@ -1,12 +1,42 @@
-# React + Vite
+# Planilla de Progresión de Ejercicios
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web para crear y gestionar rutinas de entrenamiento personalizadas, pensada para entrenadores, gimnasios y centros de rehabilitación.
 
-Currently, two official plugins are available:
+## Características
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Carga dinámica de ejercicios y sesiones (6 o 12)
+- Filas fijas de **Entrada en Calor** y **Vuelta a la Calma**
+- Selector automático de series, repeticiones y peso
+- Soporte para ejercicios por tiempo (ej: *Plancha: 3x10''*)
+- Exportación a PDF con logo (usando jsPDF + autoTable)
+- Exportación e importación a Excel (SheetJS)
+- Envío por correo con validación (Nodemailer + SweetAlert2)
+- Responsive y con modo oscuro
 
-## Expanding the ESLint configuration
+## Tecnologías
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend**: Vite + React + Tailwind CSS
+- **PDF**: jsPDF + autoTable
+- **Excel**: SheetJS
+- **Backend**: Node.js + Express + Nodemailer
+- **Extras**: SweetAlert2, soporte para imágenes y logos
+
+## Uso
+
+1. Completar datos del alumno (nombre, edad, peso)
+2. Agregar ejercicios y configurar su progresión
+3. Personalizar tiempo de Entrada en Calor y Vuelta a la Calma
+4. Exportar como PDF o Excel
+5. Enviar por correo al alumno o contacto
+
+## Instalación
+
+```bash
+# Instalar dependencias
+npm install
+
+# Ejecutar en modo desarrollo
+npm run dev
+
+# Compilar para producción
+npm run build
