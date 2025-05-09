@@ -1,7 +1,7 @@
 // src/components/TablaEjercicios.jsx
 import React from 'react';
 
-const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones  }) => {
+const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones }) => {
   const eliminarFila = (index) => {
     const nuevaLista = ejercicios.filter((_, i) => i !== index);
     setEjercicios(nuevaLista);
@@ -17,8 +17,7 @@ const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones  }) => {
     setEjercicios(nuevaLista);
   };
 
-  const headers = ["Ejercicio", ...Array.from({ length: cantidadSesiones }, (_, i) => `S${i + 1}`), "Eliminar"];
-
+  const headers = ["Ejercicio", ...Array.from({ length: cantidadSesiones }, (_, i) => `Sesión ${i + 1}`), "Eliminar"];
 
   return (
     <div className="overflow-x-auto bg-white dark:bg-[#1f1f1f] p-4 rounded-xl shadow-md mb-6">
@@ -41,7 +40,7 @@ const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones  }) => {
                   onChange={(e) => actualizarCelda(i, 0, e.target.value)}
                 />
               </td>
-              {fila.sesiones.map((s, j) => (
+              {fila.sesiones.slice(0, cantidadSesiones).map((s, j) => (
                 <td key={j} className="border p-1">
                   <input
                     type="text"

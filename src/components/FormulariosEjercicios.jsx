@@ -1,9 +1,10 @@
-// src/components/FormulariosEjercicios.jsx
+// src/components/FormularioEjercicio.jsx
 import React, { useState } from 'react';
 
 const FormularioEjercicio = ({ onAgregar, cantidadSesiones = 12, agregarFilaFija }) => {
   const [nombre, setNombre] = useState('');
   const [peso, setPeso] = useState('');
+  const [incrementoPeso, setIncrementoPeso] = useState(2);
   const [series, setSeries] = useState('');
   const [repsIniciales, setRepsIniciales] = useState('');
   const [entradaCalor, setEntradaCalor] = useState(5);
@@ -37,11 +38,13 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones = 12, agregarFilaFija
     } else {
       let r = parseInt(repsIniciales);
       let p = parseFloat(peso);
+      const incremento = parseFloat(incrementoPeso) || 2.5;
+
       while (total < cantidadSesiones) {
         sesiones.push(`${p}kg ${s}x${r}`);
         total++;
         if (r >= 10 && total < cantidadSesiones) {
-          p += 2.5;
+          p += incremento;
           r = parseInt(repsIniciales);
         } else {
           r += 2;
@@ -62,11 +65,16 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones = 12, agregarFilaFija
 
   return (
     <div className="bg-white dark:bg-[#1f1f1f] p-6 rounded-xl shadow-md mb-6">
-      <h3 className="text-lg font-semibold text-center mb-4 text-[#2AB0A1] dark:text-white">Cargar nuevo ejercicio</h3>
+      <h3 className="text-lg font-semibold text-center mb-4 text-[#2AB0A1] dark:text-white">
+        Cargar nuevo ejercicio
+      </h3>
 
+      {/* Entrada en Calor y Vuelta a la Calma */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="flex flex-col">
-          <label className="text-[#2AB0A1] dark:text-white font-semibold mb-1 text-sm">Entrada en Calor</label>
+          <label className="text-[#2AB0A1] dark:text-white font-semibold mb-1 text-sm">
+            Entrada en Calor
+          </label>
           <select
             value={entradaCalor}
             onChange={(e) => {
@@ -84,7 +92,9 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones = 12, agregarFilaFija
         </div>
 
         <div className="flex flex-col">
-          <label className="text-[#2AB0A1] dark:text-white font-semibold mb-1 text-sm">Vuelta a la Calma</label>
+          <label className="text-[#2AB0A1] dark:text-white font-semibold mb-1 text-sm">
+            Vuelta a la Calma
+          </label>
           <select
             value={vueltaCalma}
             onChange={(e) => {
@@ -102,7 +112,9 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones = 12, agregarFilaFija
         </div>
       </div>
 
-      <form onSubmit={manejarEnvio} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Formulario dinámico */}
+      <form onSubmit={manejarEnvio} className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        {/* Ejercicio */}
         <input
           type="text"
           list="ejercicios"
@@ -112,26 +124,51 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones = 12, agregarFilaFija
           onChange={(e) => setNombre(e.target.value)}
           required
         />
+        {/* Peso con datalist */}
         {!nombre.toLowerCase().includes('plancha') && (
-          <input
-            type="number"
-            className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-            placeholder="Peso (kg)"
-            min={0}
-            value={peso}
-            onChange={(e) => setPeso(e.target.value)}
-            required
-          />
+          <>
+            <input
+              type="number"
+              list="pesosFrecuentes"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+              placeholder="Peso (kg)"
+              min={0}
+              value={peso}
+              onChange={(e) => setPeso(e.target.value)}
+              required
+            />
+            <datalist id="pesosFrecuentes">
+              {[5, 10, 15, 20, 25, 30, 35, 40].map((val) => (
+                <option key={val} value={val} />
+              ))}
+            </datalist>
+
+            {/* Incremento */}
+            <input
+              type="number"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+              placeholder="Incremento (kg)"
+              min={0}
+              value={incrementoPeso}
+              onChange={(e) => setIncrementoPeso(e.target.value)}
+            />
+          </>
         )}
-        <input
-          type="number"
+
+        {/* Series */}
+        <select
           className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-          placeholder="Series"
-          min={1}
           value={series}
           onChange={(e) => setSeries(e.target.value)}
           required
-        />
+        >
+          <option value="">Series</option>
+          <option value="2">2 series</option>
+          <option value="3">3 series</option>
+          <option value="4">4 series</option>
+        </select>
+
+        {/* Reps o Segundos */}
         <input
           type="number"
           className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
@@ -142,7 +179,7 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones = 12, agregarFilaFija
           required
         />
 
-        <div className="md:col-span-4 flex justify-center">
+        <div className="md:col-span-5 flex justify-center">
           <button
             type="submit"
             className="bg-[#2AB0A1] hover:bg-[#218C85] text-white px-6 py-2 rounded-full transition font-semibold"
