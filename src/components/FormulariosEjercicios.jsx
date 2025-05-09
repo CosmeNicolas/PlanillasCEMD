@@ -27,33 +27,28 @@ const FormularioEjercicio = ({ onAgregar }) => {
   const manejarEnvio = (e) => {
     e.preventDefault();
 
-    const nombreLower = nombre.toLowerCase();
-    const isPlancha = nombreLower.includes('plancha');
-
-    if (!nombre || !series || (!peso && !isPlancha) || !repsIniciales) {
-      alert('Completa todos los campos correctamente');
-      return;
-    }
+    const isPlancha = nombre.toLowerCase().includes('plancha');
+    if (!nombre || !series || (!peso && !isPlancha) || !repsIniciales) return;
 
     const sesiones = [];
-    let totalSesiones = 0;
     const s = parseInt(series);
+    let total = 0;
 
     if (isPlancha) {
       let segundos = parseInt(repsIniciales);
-      while (totalSesiones < 12) {
+      while (total < cantidadSesiones) {
         sesiones.push(`${s}x${segundos}''`);
         segundos += 5;
-        totalSesiones++;
+        total++;
       }
     } else {
       let r = parseInt(repsIniciales);
-      let pesoActual = parseFloat(peso);
-      while (totalSesiones < 12) {
-        sesiones.push(`${pesoActual}kg ${s}x${r}`);
-        totalSesiones++;
-        if (r >= 10 && totalSesiones < 12) {
-          pesoActual += 2.5;
+      let p = parseFloat(peso);
+      while (total < cantidadSesiones) {
+        sesiones.push(`${p}kg ${s}x${r}`);
+        total++;
+        if (r >= 10 && total < cantidadSesiones) {
+          p += 2.5;
           r = parseInt(repsIniciales);
         } else {
           r += 2;
@@ -62,17 +57,7 @@ const FormularioEjercicio = ({ onAgregar }) => {
     }
 
     onAgregar({ ejercicio: nombre, sesiones });
-    setNombre('');
-    setPeso('');
-    setSeries('');
-    setRepsIniciales('');
-  };
-
-  const agregarFija = (tipo, valor) => {
-    onAgregar({
-      ejercicio: tipo,
-      sesiones: Array(12).fill(`${valor} min`)
-    });
+    setNombre(''); setPeso(''); setSeries(''); setRepsIniciales('');
   };
 
   return (
