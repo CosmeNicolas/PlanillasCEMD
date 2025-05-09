@@ -17,10 +17,14 @@ const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones }) => {
     setEjercicios(nuevaLista);
   };
 
-  const headers = ["Ejercicio", ...Array.from({ length: cantidadSesiones }, (_, i) => `S${i + 1}`), "Eliminar"];
+  const headers = [
+    'Ejercicio',
+    ...Array.from({ length: cantidadSesiones }, (_, i) => `Sesión ${i + 1}`),
+    'Eliminar',
+  ];
 
   return (
-    <div className="overflow-x-auto bg-white dark:bg-[#1f1f1f] p-4 rounded-xl shadow-md mb-6 border-l-4 border-[#2AB0A1]">
+    <div className="overflow-x-auto bg-white dark:bg-[#1f1f1f] p-4 rounded-xl shadow-md mb-6">
       <table className="w-full text-sm text-center border-collapse">
         <thead>
           <tr className="bg-[#2AB0A1] text-white text-xs md:text-sm">
@@ -31,21 +35,21 @@ const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones }) => {
         </thead>
         <tbody>
           {ejercicios.map((fila, i) => (
-            <tr key={i} className={i % 2 === 0 ? "bg-gray-50 dark:bg-[#2c2c2c]" : "dark:bg-[#1f1f1f]"}>
+            <tr key={i} className={i % 2 === 0 ? 'bg-gray-50 dark:bg-[#2c2c2c]' : 'dark:bg-[#1f1f1f]'}>
               <td className="border p-1">
                 <input
-                  className="w-full bg-transparent text-center text-[#333] dark:text-white font-semibold focus:outline-none"
                   type="text"
+                  className="w-full bg-transparent text-center text-[#333] dark:text-white font-semibold focus:outline-none"
                   value={fila.ejercicio}
                   onChange={(e) => actualizarCelda(i, 0, e.target.value)}
                 />
               </td>
-              {fila.sesiones.slice(0, cantidadSesiones).map((s, j) => (
+              {Array.from({ length: cantidadSesiones }, (_, j) => (
                 <td key={j} className="border p-1">
                   <input
                     type="text"
                     className="w-full bg-transparent text-center text-[#333] dark:text-white font-semibold focus:outline-none"
-                    value={s}
+                    value={fila.sesiones[j] || ''}
                     onChange={(e) => actualizarCelda(i, j + 1, e.target.value)}
                   />
                 </td>
