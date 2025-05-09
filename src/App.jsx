@@ -1,12 +1,12 @@
 // src/App.jsx
 import React, { useState } from 'react';
 import TablaEjercicios from './components/TablaEjercicios';
-import FormularioEjercicio from './components/FormulariosEjercicios';
+
 import ExportarPDF from './utils/ExportarPDF';
-import InputCorreo from './components/Inputcorreo';
+import InputCorreo from './components/InputCorreo';
 import DatosPersonales from './components/DatosPersonales';
-import Footer from '../src/UI/Footer.jsx';
-// import Navbar from '../src/UI/Navbar.jsx'
+import Footer from './UI/Footer';
+import FormularioEjercicios from './components/FormulariosEjercicios';
 
 function App() {
   const [datos, setDatos] = useState({ nombre: '', edad: '', peso: '', objetivo: '' });
@@ -14,21 +14,19 @@ function App() {
   const [cantidadSesiones, setCantidadSesiones] = useState(6);
 
   const agregarFilaFija = (fila) => {
-    setEjercicios(prev => {
-      const index = prev.findIndex(e => e.ejercicio === fila.ejercicio);
+    setEjercicios((prev) => {
+      const index = prev.findIndex((e) => e.ejercicio === fila.ejercicio);
       if (index !== -1) {
         const copia = [...prev];
         copia[index] = fila;
         return copia;
-      } else {
-        return [fila, ...prev];
       }
+      return [fila, ...prev];
     });
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-[#343434] text-gray-900 dark:text-white">
-      {/* <Navbar /> */}
       <main className="flex-grow container mx-auto p-4">
         <DatosPersonales datos={datos} setDatos={setDatos} />
 
@@ -46,8 +44,8 @@ function App() {
           </select>
         </div>
 
-        <FormularioEjercicio
-          onAgregar={(ej) => setEjercicios([...ejercicios, ej])}
+        <FormularioEjercicios
+          onAgregar={(callback) => setEjercicios((prev) => callback(prev))}
           cantidadSesiones={cantidadSesiones}
           agregarFilaFija={agregarFilaFija}
         />
@@ -64,7 +62,6 @@ function App() {
             ejercicios={ejercicios}
             cantidadSesiones={cantidadSesiones}
           />
-
           <InputCorreo
             datos={datos}
             ejercicios={ejercicios}

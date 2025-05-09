@@ -1,50 +1,41 @@
-// src/components/FormularioEjercicio.jsx
 import React, { useState } from 'react';
 
-const FormularioEjercicio = ({ onAgregar, cantidadSesiones = 12, agregarFilaFija }) => {
+const FormularioEjercicio = ({ onAgregar, cantidadSesiones, agregarFilaFija }) => {
   const [nombre, setNombre] = useState('');
   const [peso, setPeso] = useState('');
-  const [incrementoPeso, setIncrementoPeso] = useState(2);
   const [series, setSeries] = useState('');
   const [repsIniciales, setRepsIniciales] = useState('');
-  const [entradaCalor, setEntradaCalor] = useState(5);
-  const [vueltaCalma, setVueltaCalma] = useState(5);
+  const [entradaCalor, setEntradaCalor] = useState('');
+  const [vueltaCalma, setVueltaCalma] = useState('');
+  const [inicioEnSesion, setInicioEnSesion] = useState(1);
+  const [incrementoPeso, setIncrementoPeso] = useState(2.5);
 
-  const ejerciciosPredefinidos = [
-    "Abdominales", "Elevaciones de tronco", "Prensa 40º", "Prensa horizontal",
-    "Flexores", "Press de banca", "Remo", "Pantorrilas",
-    "Biceps Combinados", "Biceps", "Triceps", "Plancha"
-  ];
+  const ejerciciosPredefinidos = ['Abdominales', 'Press de banca', 'Remo', 'Plancha', 'Triceps'];
 
   const manejarEnvio = (e) => {
     e.preventDefault();
     const isPlancha = nombre.toLowerCase().includes('plancha');
     if (!nombre || !series || (!peso && !isPlancha) || !repsIniciales) {
-      alert('Por favor completá todos los campos');
+      alert('Faltan datos');
       return;
     }
 
-    const sesiones = [];
+    const sesiones = Array(cantidadSesiones).fill('');
     const s = parseInt(series);
-    let total = 0;
 
     if (isPlancha) {
-      let segundos = parseInt(repsIniciales);
-      while (total < cantidadSesiones) {
-        sesiones.push(`${s}x${segundos}''`);
-        segundos += 5;
-        total++;
+      let seg = parseInt(repsIniciales);
+      for (let i = inicioEnSesion - 1; i < cantidadSesiones; i++) {
+        sesiones[i] = `${s}x${seg}''`;
+        seg += 5;
       }
     } else {
-      let r = parseInt(repsIniciales);
       let p = parseFloat(peso);
-      const incremento = parseFloat(incrementoPeso) || 2.5;
-
-      while (total < cantidadSesiones) {
-        sesiones.push(`${p}kg ${s}x${r}`);
-        total++;
-        if (r >= 10 && total < cantidadSesiones) {
-          p += incremento;
+      let r = parseInt(repsIniciales);
+      for (let i = inicioEnSesion - 1; i < cantidadSesiones; i++) {
+        sesiones[i] = `${p}kg ${s}x${r}`;
+        if (r >= 10 && i < cantidadSesiones - 1) {
+          p += parseFloat(incrementoPeso);
           r = parseInt(repsIniciales);
         } else {
           r += 2;
@@ -52,38 +43,53 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones = 12, agregarFilaFija
       }
     }
 
-    onAgregar({ ejercicio: nombre, sesiones });
-    setNombre(''); setPeso(''); setSeries(''); setRepsIniciales('');
+    const nuevaFila = { ejercicio: nombre, sesiones };
+
+    onAgregar((prev) => {
+      const copia = [...prev];
+      const ultima = copia[copia.length - 1];
+      if (ultima && inicioEnSesion > 1) {
+        for (let i = inicioEnSesion - 1; i < cantidadSesiones; i++) {
+          ultima.sesiones[i] = sesiones[i];
+        }
+        ultima.ejercicio += ` / ${nombre}`;
+        return copia;
+      }
+      return [...prev, nuevaFila];
+    });
+
+    setNombre('');
+    setPeso('');
+    setSeries('');
+    setRepsIniciales('');
+    setInicioEnSesion(1);
+    setIncrementoPeso(2.5);
   };
 
   const agregarFija = (tipo, valor) => {
     agregarFilaFija({
       ejercicio: tipo,
-      sesiones: Array(cantidadSesiones).fill(`${valor} min`)
+      sesiones: Array(cantidadSesiones).fill(`${valor} min`),
     });
   };
 
   return (
-    <div className="bg-white dark:bg-[#1f1f1f] p-6 rounded-xl shadow-md mb-6">
-      <h3 className="text-lg font-semibold text-center mb-4 text-[#2AB0A1] dark:text-white">
-        Cargar nuevo ejercicio
-      </h3>
+    <div className="p-6 rounded-xl bg-white dark:bg-[#1f1f1f] shadow-md mb-6 border-l-4 border-[#2AB0A1]">
+      <h3 className="text-lg font-semibold text-center text-[#2AB0A1] mb-4 dark:text-white">Cargar nuevo ejercicio</h3>
 
-      {/* Entrada en Calor y Vuelta a la Calma */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="flex flex-col">
-          <label className="text-[#2AB0A1] dark:text-white font-semibold mb-1 text-sm">
-            Entrada en Calor
-          </label>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label className="text-sm font-semibold text-[#2AB0A1] dark:text-white">Entrada en Calor</label>
           <select
             value={entradaCalor}
             onChange={(e) => {
-              const valor = parseInt(e.target.value);
-              setEntradaCalor(valor);
-              agregarFija('Entrada en Calor', valor);
+              const v = parseInt(e.target.value);
+              setEntradaCalor(v);
+              agregarFija('Entrada en Calor', v);
             }}
             className="p-2 border border-[#2AB0A1] rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
           >
+            <option value="" disabled>Seleccionar tiempo</option>
             {[...Array(6)].map((_, i) => {
               const val = 5 + i;
               return <option key={val} value={val}>{val} min</option>;
@@ -91,19 +97,18 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones = 12, agregarFilaFija
           </select>
         </div>
 
-        <div className="flex flex-col">
-          <label className="text-[#2AB0A1] dark:text-white font-semibold mb-1 text-sm">
-            Vuelta a la Calma
-          </label>
+        <div>
+          <label className="text-sm font-semibold text-[#2AB0A1] dark:text-white">Vuelta a la Calma</label>
           <select
             value={vueltaCalma}
             onChange={(e) => {
-              const valor = parseInt(e.target.value);
-              setVueltaCalma(valor);
-              agregarFija('Vuelta a la Calma', valor);
+              const v = parseInt(e.target.value);
+              setVueltaCalma(v);
+              agregarFija('Vuelta a la Calma', v);
             }}
             className="p-2 border border-[#2AB0A1] rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
           >
+            <option value="" disabled>Seleccionar tiempo</option>
             {[...Array(6)].map((_, i) => {
               const val = 5 + i;
               return <option key={val} value={val}>{val} min</option>;
@@ -112,77 +117,67 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones = 12, agregarFilaFija
         </div>
       </div>
 
-      {/* Formulario dinámico */}
-      <form onSubmit={manejarEnvio} className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        {/* Ejercicio */}
+      <form onSubmit={manejarEnvio} className="grid grid-cols-1 md:grid-cols-6 gap-4">
         <input
           type="text"
           list="ejercicios"
-          className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
           placeholder="Ejercicio"
+          className="p-2 border rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           required
         />
-        {/* Peso con datalist */}
         {!nombre.toLowerCase().includes('plancha') && (
-          <>
-            <input
-              type="number"
-              list="pesosFrecuentes"
-              className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-              placeholder="Peso (kg)"
-              min={0}
-              value={peso}
-              onChange={(e) => setPeso(e.target.value)}
-              required
-            />
-            <datalist id="pesosFrecuentes">
-              {[5, 10, 15, 20, 25, 30, 35, 40].map((val) => (
-                <option key={val} value={val} />
-              ))}
-            </datalist>
-
-            {/* Incremento */}
-            <input
-              type="number"
-              className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-              placeholder="Incremento (kg)"
-              min={0}
-              value={incrementoPeso}
-              onChange={(e) => setIncrementoPeso(e.target.value)}
-            />
-          </>
+          <input
+            type="number"
+            placeholder="Peso (kg)"
+            className="p-2 border rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
+            value={peso}
+            onChange={(e) => setPeso(e.target.value)}
+            required
+          />
         )}
-
-        {/* Series */}
-        <select
-          className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+        <input
+          type="number"
+          placeholder="Series"
+          className="p-2 border rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
           value={series}
           onChange={(e) => setSeries(e.target.value)}
           required
-        >
-          <option value="">Series</option>
-          <option value="2">2 series</option>
-          <option value="3">3 series</option>
-          <option value="4">4 series</option>
-        </select>
-
-        {/* Reps o Segundos */}
+        />
         <input
           type="number"
-          className="border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
           placeholder={nombre.toLowerCase().includes('plancha') ? "Segundos" : "Reps iniciales"}
-          min={1}
+          className="p-2 border rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
           value={repsIniciales}
           onChange={(e) => setRepsIniciales(e.target.value)}
           required
         />
+        <select
+          value={inicioEnSesion}
+          onChange={(e) => setInicioEnSesion(parseInt(e.target.value))}
+          className="p-2 border rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
+        >
+          {Array.from({ length: cantidadSesiones }, (_, i) => (
+            <option key={i} value={i + 1}>Desde sesión {i + 1}</option>
+          ))}
+        </select>
+        {!nombre.toLowerCase().includes('plancha') && (
+          <input
+            type="number"
+            placeholder="Incremento peso"
+            step="0.5"
+            min="0.5"
+            className="p-2 border rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
+            value={incrementoPeso}
+            onChange={(e) => setIncrementoPeso(e.target.value)}
+          />
+        )}
 
-        <div className="md:col-span-5 flex justify-center">
+        <div className="md:col-span-6 flex justify-center">
           <button
             type="submit"
-            className="bg-[#2AB0A1] hover:bg-[#218C85] text-white px-6 py-2 rounded-full transition font-semibold"
+            className="bg-[#2AB0A1] hover:bg-[#218C85] text-white font-semibold px-6 py-2 rounded-full"
           >
             Agregar
           </button>
@@ -190,9 +185,7 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones = 12, agregarFilaFija
       </form>
 
       <datalist id="ejercicios">
-        {ejerciciosPredefinidos.map((e, idx) => (
-          <option key={idx} value={e} />
-        ))}
+        {ejerciciosPredefinidos.map((e, i) => <option key={i} value={e} />)}
       </datalist>
     </div>
   );

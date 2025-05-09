@@ -17,10 +17,10 @@ const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones }) => {
     setEjercicios(nuevaLista);
   };
 
-  const headers = ["Ejercicio", ...Array.from({ length: cantidadSesiones }, (_, i) => `Sesión ${i + 1}`), "Eliminar"];
+  const headers = ["Ejercicio", ...Array.from({ length: cantidadSesiones }, (_, i) => `S${i + 1}`), "Eliminar"];
 
   return (
-    <div className="overflow-x-auto bg-white dark:bg-[#1f1f1f] p-4 rounded-xl shadow-md mb-6">
+    <div className="overflow-x-auto bg-white dark:bg-[#1f1f1f] p-4 rounded-xl shadow-md mb-6 border-l-4 border-[#2AB0A1]">
       <table className="w-full text-sm text-center border-collapse">
         <thead>
           <tr className="bg-[#2AB0A1] text-white text-xs md:text-sm">
