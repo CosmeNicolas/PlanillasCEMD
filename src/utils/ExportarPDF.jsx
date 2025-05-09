@@ -1,11 +1,11 @@
 import React from 'react';
 import { generarPDF } from '../utils/generarPDF';
 
-const ExportarPDF = ({ datos, ejercicios }) => {
+const ExportarPDF = ({ datos, ejercicios, cantidadSesiones }) => {
   const exportarPDF = () => {
     generarPDF(datos, ejercicios, (doc) => {
       doc.save('Progresion_Ejercicios.pdf');
-    });
+    }, cantidadSesiones); // ✅ se pasa el valor
   };
 
   return (

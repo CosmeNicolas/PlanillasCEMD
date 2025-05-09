@@ -1,9 +1,10 @@
+// src/components/InputCorreo.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { generarPDF } from '../utils/generarPDF';
 
-const InputCorreo = ({ datos, ejercicios }) => {
+const InputCorreo = ({ datos, ejercicios, cantidadSesiones }) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -24,15 +25,6 @@ const InputCorreo = ({ datos, ejercicios }) => {
       });
     }
 
-    /* if (!datos || !ejercicios || ejercicios.length === 0) {
-      return Swal.fire({
-        icon: 'error',
-        title: 'Faltan datos',
-        text: 'Debe completar los datos personales y ejercicios.',
-        ...estiloSwal,
-      });
-    }
- */
     setLoading(true);
 
     try {
@@ -68,7 +60,7 @@ const InputCorreo = ({ datos, ejercicios }) => {
         }
 
         setLoading(false);
-      });
+      }, cantidadSesiones); // ✅ PASAMOS LA CANTIDAD DE SESIONES AQUÍ
     } catch (error) {
       console.error('Error al enviar:', error);
       Swal.fire({

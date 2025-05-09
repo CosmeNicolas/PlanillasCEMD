@@ -1,9 +1,10 @@
 // src/utils/generarPDF.js
+import React from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import logo from '../img/cemd-logo-1.png';
 
-export const generarPDF = (datos, ejercicios, callback) => {
+export const generarPDF = (datos, ejercicios, callback, cantidadSesiones = 12) => {
   const doc = new jsPDF();
   const logoImg = new Image();
   logoImg.src = logo;
@@ -24,8 +25,13 @@ export const generarPDF = (datos, ejercicios, callback) => {
     doc.text(`Peso: ${datos.peso} kg`, 14, 44 + logoHeight);
     doc.text(`Objetivo: ${datos.objetivo}`, 14, 51 + logoHeight);
 
-    const headers = ['Ejercicio', ...Array.from({ length: 12 }, (_, i) => `S${i + 1}`)];
-    const body = ejercicios.map(e => [e.ejercicio, ...e.sesiones]);
+    // 🧠 Asegurar que cantidadSesiones tenga valor numérico válido
+    const sesionesValidas = Number(cantidadSesiones) || 12;
+    const headers = ['Ejercicio', ...Array.from({ length: sesionesValidas }, (_, i) => `S${i + 1}`)];
+    const body = ejercicios.map(e => [
+      e.ejercicio,
+      ...(Array.isArray(e.sesiones) ? e.sesiones.slice(0, sesionesValidas) : [])
+    ]);
 
     autoTable(doc, {
       startY: 60 + logoHeight,

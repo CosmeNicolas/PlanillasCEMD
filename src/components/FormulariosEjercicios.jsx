@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import React from 'react';
+// src/components/FormulariosEjercicios.jsx
+import React, { useState } from 'react';
 
-const FormularioEjercicio = ({ onAgregar }) => {
+const FormularioEjercicio = ({ onAgregar, cantidadSesiones = 12, agregarFilaFija }) => {
   const [nombre, setNombre] = useState('');
   const [peso, setPeso] = useState('');
   const [series, setSeries] = useState('');
@@ -10,25 +10,18 @@ const FormularioEjercicio = ({ onAgregar }) => {
   const [vueltaCalma, setVueltaCalma] = useState(5);
 
   const ejerciciosPredefinidos = [
-    "Abdominales",
-    'Elevaciones de tronco',
-    'Prensa 40º',
-    'Prensa horizontal',
-    'Flexores',
-    "Press de banca",
-    "Remo",
-    "Pantorrilas",
-    "Biceps Combinados",
-    "Biceps",
-    "Triceps",
-    "Plancha"
+    "Abdominales", "Elevaciones de tronco", "Prensa 40º", "Prensa horizontal",
+    "Flexores", "Press de banca", "Remo", "Pantorrilas",
+    "Biceps Combinados", "Biceps", "Triceps", "Plancha"
   ];
 
   const manejarEnvio = (e) => {
     e.preventDefault();
-
     const isPlancha = nombre.toLowerCase().includes('plancha');
-    if (!nombre || !series || (!peso && !isPlancha) || !repsIniciales) return;
+    if (!nombre || !series || (!peso && !isPlancha) || !repsIniciales) {
+      alert('Por favor completá todos los campos');
+      return;
+    }
 
     const sesiones = [];
     const s = parseInt(series);
@@ -60,11 +53,17 @@ const FormularioEjercicio = ({ onAgregar }) => {
     setNombre(''); setPeso(''); setSeries(''); setRepsIniciales('');
   };
 
+  const agregarFija = (tipo, valor) => {
+    agregarFilaFija({
+      ejercicio: tipo,
+      sesiones: Array(cantidadSesiones).fill(`${valor} min`)
+    });
+  };
+
   return (
     <div className="bg-white dark:bg-[#1f1f1f] p-6 rounded-xl shadow-md mb-6">
       <h3 className="text-lg font-semibold text-center mb-4 text-[#2AB0A1] dark:text-white">Cargar nuevo ejercicio</h3>
 
-      {/* Entrada en Calor y Vuelta a la Calma */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="flex flex-col">
           <label className="text-[#2AB0A1] dark:text-white font-semibold mb-1 text-sm">Entrada en Calor</label>
@@ -103,7 +102,6 @@ const FormularioEjercicio = ({ onAgregar }) => {
         </div>
       </div>
 
-      {/* Formulario ejercicio progresivo */}
       <form onSubmit={manejarEnvio} className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <input
           type="text"

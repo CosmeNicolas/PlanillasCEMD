@@ -1,7 +1,7 @@
 // src/components/TablaEjercicios.jsx
 import React from 'react';
 
-const TablaEjercicios = ({ ejercicios, setEjercicios }) => {
+const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones  }) => {
   const eliminarFila = (index) => {
     const nuevaLista = ejercicios.filter((_, i) => i !== index);
     setEjercicios(nuevaLista);
@@ -17,7 +17,8 @@ const TablaEjercicios = ({ ejercicios, setEjercicios }) => {
     setEjercicios(nuevaLista);
   };
 
-  const headers = ["Ejercicio", ...Array.from({ length: 12 }, (_, i) => `Sesión ${i + 1}`), "Eliminar"];
+  const headers = ["Ejercicio", ...Array.from({ length: cantidadSesiones }, (_, i) => `S${i + 1}`), "Eliminar"];
+
 
   return (
     <div className="overflow-x-auto bg-white dark:bg-[#1f1f1f] p-4 rounded-xl shadow-md mb-6">

@@ -6,11 +6,12 @@ import ExportarPDF from './utils/ExportarPDF';
 import InputCorreo from './components/Inputcorreo';
 import DatosPersonales from './components/DatosPersonales';
 import Footer from '../src/UI/Footer.jsx';
-/* import Navbar from '../src/UI/Navbar.jsx' */
+// import Navbar from '../src/UI/Navbar.jsx'
 
 function App() {
   const [datos, setDatos] = useState({ nombre: '', edad: '', peso: '', objetivo: '' });
   const [ejercicios, setEjercicios] = useState([]);
+  const [cantidadSesiones, setCantidadSesiones] = useState(6);
 
   const agregarFilaFija = (fila) => {
     setEjercicios(prev => {
@@ -26,15 +27,49 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-[#343434] text-gray-900 dark:text-white">
       {/* <Navbar /> */}
       <main className="flex-grow container mx-auto p-4">
         <DatosPersonales datos={datos} setDatos={setDatos} />
-        <FormularioEjercicio onAgregar={(ej) => setEjercicios([...ejercicios, ej])} />
-        <TablaEjercicios ejercicios={ejercicios} setEjercicios={setEjercicios} />
+
+        <div className="flex justify-center items-center gap-4 mb-6">
+          <label className="text-[#2AB0A1] font-semibold">
+            Cantidad de sesiones:
+          </label>
+          <select
+            value={cantidadSesiones}
+            onChange={(e) => setCantidadSesiones(parseInt(e.target.value))}
+            className="p-2 border border-[#2AB0A1] rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
+          >
+            <option value={6}>6 sesiones</option>
+            <option value={12}>12 sesiones</option>
+          </select>
+        </div>
+
+        <FormularioEjercicio
+          onAgregar={(ej) => setEjercicios([...ejercicios, ej])}
+          cantidadSesiones={cantidadSesiones}
+          agregarFilaFija={agregarFilaFija}
+        />
+
+        <TablaEjercicios
+          ejercicios={ejercicios}
+          setEjercicios={setEjercicios}
+          cantidadSesiones={cantidadSesiones}
+        />
+
         <div className="flex justify-center gap-4 mt-6">
-          <ExportarPDF datos={datos} ejercicios={ejercicios} />
-          <InputCorreo datos={datos} ejercicios={ejercicios} />
+          <ExportarPDF
+            datos={datos}
+            ejercicios={ejercicios}
+            cantidadSesiones={cantidadSesiones}
+          />
+
+          <InputCorreo
+            datos={datos}
+            ejercicios={ejercicios}
+            cantidadSesiones={cantidadSesiones}
+          />
         </div>
       </main>
       <Footer />
