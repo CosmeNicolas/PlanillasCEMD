@@ -20,13 +20,13 @@ const NavBar = () => {
     <Navbar
       isBordered
       maxWidth="full"
-      className="bg-[#2AB0A1] text-white dark:bg-[#1a4742] dark:text-white"
+      className="bg-[#056157] text-white dark:bg-[#1a4742] dark:text-white py-2"
     >
       {/* LOGO */}
       <NavbarBrand>
         <div className="flex items-center gap-2 cursor-default">
-          <img className="w-6 h-6 rounded-full" src={logo} alt="Logo CEMD" />
-          <span className="hidden sm:block text-xl font-semibold">CEMD</span>
+          <img className="w-10 h-10  rounded-full" src={logo} alt="Logo CEMD" />
+          <span className="hidden sm:block text-xl font-semibold text-amber-50">CEMD</span>
         </div>
       </NavbarBrand>
 

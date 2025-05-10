@@ -6,7 +6,7 @@ import logo from '../img/cemd-logo-1.png';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#2AB0A1] dark:bg-[#1a4742] text-white py-6 mt-8">
+    <footer className="bg-[#056157] dark:bg-[#1a4742] text-white py-6 mt-8">
       <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Image
