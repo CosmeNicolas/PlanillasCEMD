@@ -1,7 +1,7 @@
 // src/App.jsx
 import React, { useState } from 'react';
 import TablaEjercicios from './components/TablaEjercicios';
-
+import NavBar from './UI/NavBar';
 import ExportarPDF from './utils/ExportarPDF';
 import Inputcorreo from './components/Inputcorreo';
 import DatosPersonales from './components/DatosPersonales';
@@ -27,6 +27,7 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-[#343434] text-gray-900 dark:text-white">
+      <NavBar/>
       <main className="flex-grow container mx-auto p-4">
         <DatosPersonales datos={datos} setDatos={setDatos} />
 
