@@ -39,7 +39,8 @@ const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones }) => {
               <td className="border p-1">
                 <input
                   type="text"
-                  className="w-full bg-transparent text-center text-[#333] dark:text-white font-semibold focus:outline-none"
+                  className="w-full bg-transparent text-center text-[#333] dark:text-white font-bold tracking-wide focus:outline-none"
+
                   value={fila.ejercicio}
                   onChange={(e) => actualizarCelda(i, 0, e.target.value)}
                 />
@@ -48,7 +49,8 @@ const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones }) => {
                 <td key={j} className="border p-1">
                   <input
                     type="text"
-                    className="w-full bg-transparent text-center text-[#333] dark:text-white font-semibold focus:outline-none"
+                    className="w-full bg-transparent text-center text-[#333] dark:text-white font-bold tracking-wide focus:outline-none"
+
                     value={fila.sesiones[j] || ''}
                     onChange={(e) => actualizarCelda(i, j + 1, e.target.value)}
                   />

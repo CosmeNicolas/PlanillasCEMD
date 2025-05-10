@@ -157,7 +157,7 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones, agregarFilaFija }) =
           type="number"
           value={repsIniciales}
           onChange={(e) => setRepsIniciales(e.target.value)}
-          placeholder="Reps o Segundos"
+          placeholder="Repeticiones"
           className="p-2 border rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
           required
         />

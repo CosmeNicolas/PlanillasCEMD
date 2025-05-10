@@ -25,13 +25,13 @@ const NavBar = () => {
       {/* LOGO */}
       <NavbarBrand>
         <div className="flex items-center gap-2 cursor-default">
-          <img className="w-10 h-10 rounded-full" src={logo} alt="Logo CEMD" />
-          <span className="hidden sm:block text-xl font-bold">CEMD</span>
+          <img className="w-6 h-6 rounded-full" src={logo} alt="Logo CEMD" />
+          <span className="hidden sm:block text-xl font-semibold">CEMD</span>
         </div>
       </NavbarBrand>
 
       {/* DARK MODE TOGGLE */}
-      <NavbarContent justify="end">
+     {/*  <NavbarContent justify="end">
         <Button
           isIconOnly
           size="sm"
@@ -41,7 +41,7 @@ const NavBar = () => {
         >
           {theme === 'dark' ? <SunIcon size={18} /> : <MoonIcon size={18} />}
         </Button>
-      </NavbarContent>
+      </NavbarContent> */}
     </Navbar>
   );
 };
