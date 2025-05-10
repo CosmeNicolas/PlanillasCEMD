@@ -20,7 +20,7 @@ const NavBar = () => {
     <Navbar
       isBordered
       maxWidth="full"
-      className="bg-[#056157] text-white dark:bg-[#1a4742] dark:text-white py-2"
+      className="bg-[#056157] text-white dark:bg-[#1a4742] dark:text-white py-2 "
     >
       {/* LOGO */}
       <NavbarBrand>
