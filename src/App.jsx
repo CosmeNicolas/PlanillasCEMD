@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import TablaEjercicios from './components/TablaEjercicios';
 
 import ExportarPDF from './utils/ExportarPDF';
-import InputCorreo from './components/InputCorreo';
+import Inputcorreo from './components/Inputcorreo';
 import DatosPersonales from './components/DatosPersonales';
 import Footer from './UI/Footer';
 import FormularioEjercicios from './components/FormulariosEjercicios';
@@ -62,7 +62,7 @@ function App() {
             ejercicios={ejercicios}
             cantidadSesiones={cantidadSesiones}
           />
-          <InputCorreo
+          <Inputcorreo
             datos={datos}
             ejercicios={ejercicios}
             cantidadSesiones={cantidadSesiones}
