@@ -1,70 +1,147 @@
-// src/utils/generarPDF.jsx
-import React from 'react';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import logo from '../img/cemd-logo-1.png';
+import React from "react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import logo from "../img/cemd-logo-1.png";
 
-export const generarPDF = (datos, ejercicios, callback, cantidadSesiones = 12) => {
-  const doc = new jsPDF({ orientation: 'landscape' });
+export const generarPDF = (
+  datos,
+  ejercicios,
+  callback,
+  cantidadSesiones = 12
+) => {
+  const doc = new jsPDF({ orientation: "landscape" });
 
   const logoImg = new Image();
   logoImg.src = logo;
 
   logoImg.onload = function () {
-    const logoWidth = 30;
+    const logoWidth = 15;
     const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
     const pageWidth = doc.internal.pageSize.getWidth();
 
     // 👉 Logo alineado a la derecha
-    doc.addImage(logoImg, 'PNG', pageWidth - logoWidth - 14, 10, logoWidth, logoHeight);
+    doc.addImage(
+      logoImg,
+      "PNG",
+      pageWidth - logoWidth - 14,
+      10,
+      logoWidth,
+      logoHeight
+    );
 
-    // 👉 Datos personales a la izquierda
-    doc.setFontSize(12);
-    doc.setTextColor('#333333');
-    doc.text(`Apellido y Nombre: ${datos.nombre}`, 14, 15);
-    doc.text(`Edad: ${datos.edad}`, 14, 22);
-    doc.text(`Peso: ${datos.peso} kg`, 14, 29);
-    doc.text(`Objetivo: ${datos.objetivo}`, 14, 36);
+    // 🎯 Datos personales con partes en negrita
+    doc.setFontSize(11);
+    doc.setTextColor(0, 0, 0);
+
+    doc.setFont("helvetica", "normal");
+    doc.text("Apellido y Nombre: ", 14, 20);
+    const nombreX = 14 + doc.getTextWidth("Apellido y Nombre: ");
+    doc.setFont("helvetica", "bold");
+    doc.text(`${datos.nombre}`, nombreX, 20);
+
+    const edadLabel = " | Edad: ";
+    const edadLabelX = nombreX + doc.getTextWidth(`${datos.nombre}`);
+    doc.setFont("helvetica", "normal");
+    doc.text(edadLabel, edadLabelX, 20);
+    doc.setFont("helvetica", "bold");
+    const edadValueX = edadLabelX + doc.getTextWidth(edadLabel);
+    doc.text(`${datos.edad}`, edadValueX, 20);
+
+    const pesoLabel = " | Peso: ";
+    const pesoLabelX = edadValueX + doc.getTextWidth(`${datos.edad}`);
+    doc.setFont("helvetica", "normal");
+    doc.text(pesoLabel, pesoLabelX, 20);
+    doc.setFont("helvetica", "bold");
+    const pesoValueX = pesoLabelX + doc.getTextWidth(pesoLabel);
+    doc.text(`${datos.peso} kg`, pesoValueX, 20);
+
+    const alturaLabel = " | Altura: ";
+    const alturaLabelX = pesoValueX + doc.getTextWidth(`${datos.peso} kg`);
+    doc.setFont("helvetica", "normal");
+    doc.text(alturaLabel, alturaLabelX, 20);
+    doc.setFont("helvetica", "bold");
+    const alturaValueX = alturaLabelX + doc.getTextWidth(alturaLabel);
+    doc.text(`${datos.altura || "-"}`, alturaValueX, 20);
+
+    const objetivoLabel = " | Objetivo: ";
+    const objetivoLabelX = alturaValueX + doc.getTextWidth(`${datos.altura || "-"}`);
+    doc.setFont("helvetica", "normal");
+    doc.text(objetivoLabel, objetivoLabelX, 20);
+    doc.setFont("helvetica", "bold");
+    const objetivoValueX = objetivoLabelX + doc.getTextWidth(objetivoLabel);
+    doc.text(`${datos.objetivo}`, objetivoValueX, 20);
+
+    // 🕓 Fecha de elaboración (después de Objetivo)
+    const fechaActual = new Date().toLocaleDateString("es-AR"); // formato: dd/mm/yyyy
+    const fechaLabel = " | Fecha de elaboración: ";
+    const fechaLabelX = objetivoValueX + doc.getTextWidth(`${datos.objetivo}`);
+    doc.setFont("helvetica", "normal");
+    doc.text(fechaLabel, fechaLabelX, 20);
+    doc.setFont("helvetica", "bold");
+    const fechaValueX = fechaLabelX + doc.getTextWidth(fechaLabel);
+    doc.text(`${fechaActual}`, fechaValueX, 20);
 
     // 🧾 Cabecera de la tabla
     const sesionesValidas = Number(cantidadSesiones) || 12;
-    const headers = ['Ejercicio', ...Array.from({ length: sesionesValidas }, (_, i) => `S${i + 1}`)];
+    const headers = [
+      "Ejercicio",
+      ...Array.from({ length: sesionesValidas }, (_, i) => `Día ${i + 1}`),
+    ];
 
-    // 🧩 Cuerpo de la tabla
-    const body = ejercicios.map(e => [
-      e.ejercicio,
-      ...(Array.isArray(e.sesiones) ? e.sesiones.slice(0, sesionesValidas) : [])
-    ]);
+    const filaFechas = [
+      "Fechas",
+      ...Array.from({ length: sesionesValidas }, () => ""),
+    ];
 
-    // 📋 Generar tabla con estilo mejorado
+    const body = [
+      filaFechas,
+      ...ejercicios.map((e) => [
+        e.ejercicio,
+        ...(Array.isArray(e.sesiones)
+          ? e.sesiones.slice(0, sesionesValidas)
+          : []),
+      ]),
+    ];
+
+    const fechaRowIndex = 0;
+
     autoTable(doc, {
-      startY: 50,
+      startY: 28,
       head: [headers],
       body,
       styles: {
-        fontSize: 10,                // ✅ Tamaño de letra mayor
-        halign: 'center',
-        valign: 'middle',
-        cellPadding: 4,             // ✅ Más espacio en celdas
+        fontSize: 10,
+        halign: "center",
+        valign: "middle",
+        cellPadding: 2,
         lineColor: [200, 200, 200],
-        lineWidth: 0.2
+        lineWidth: 0.5,
       },
       headStyles: {
-        fillColor: [42, 176, 161],   // ✅ Verde institucional
+        fillColor: [42, 176, 161],
         textColor: 255,
-        fontStyle: 'bold',          // ✅ Títulos en negrita
-        halign: 'center'
+        fontStyle: "bold",
+        halign: "center",
       },
       bodyStyles: {
-        textColor: [50, 50, 50]      // ✅ Texto gris oscuro
+        textColor: [50, 50, 50],
       },
       columnStyles: {
-        0: { halign: 'left' }        // ✅ "Ejercicio" alineado a la izquierda
+        0: { halign: "left" },
       },
-      alternateRowStyles: {
-        fillColor: [245, 245, 245]   // ✅ Filas alternadas para lectura
+      theme: "plain",
+      didParseCell: function (data) {
+        if (data.section === "head") return;
+        if (data.row.index === fechaRowIndex) {
+          data.cell.styles.fontStyle = "italic";
+          data.cell.styles.fillColor = [230, 230, 230];
+          data.cell.styles.textColor = [90, 90, 90];
+        } else {
+          const realIndex = data.row.index - 1;
+          data.cell.styles.fillColor =
+            realIndex % 2 === 1 ? [245, 245, 245] : [255, 255, 255];
+        }
       },
-      theme: 'grid'
     });
 
     callback(doc);
