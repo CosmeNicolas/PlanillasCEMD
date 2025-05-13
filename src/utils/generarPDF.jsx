@@ -15,7 +15,7 @@ export const generarPDF = (
   logoImg.src = logo;
 
   logoImg.onload = function () {
-    const logoWidth = 15;
+    const logoWidth = 12;
     const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
     const pageWidth = doc.internal.pageSize.getWidth();
 
