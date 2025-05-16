@@ -2,6 +2,9 @@ import React from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import logo from "../img/cemd-logo-1.png";
+import bones from "../img/bones.png";
+import happy from "../img/happy.png";
+import neutral from "../img/neutral.png";
 
 export const generarPDF = (
   datos,
@@ -29,7 +32,7 @@ export const generarPDF = (
       logoHeight
     );
 
-    // 🎯 Datos personales con partes en negrita
+    // 🎯 Datos personales
     doc.setFontSize(11);
     doc.setTextColor(0, 0, 0);
 
@@ -64,24 +67,25 @@ export const generarPDF = (
     doc.text(`${datos.altura || "-"}`, alturaValueX, 20);
 
     const objetivoLabel = " | Objetivo: ";
-    const objetivoLabelX = alturaValueX + doc.getTextWidth(`${datos.altura || "-"}`);
+    const objetivoLabelX =
+      alturaValueX + doc.getTextWidth(`${datos.altura || "-"}`);
     doc.setFont("helvetica", "normal");
     doc.text(objetivoLabel, objetivoLabelX, 20);
     doc.setFont("helvetica", "bold");
     const objetivoValueX = objetivoLabelX + doc.getTextWidth(objetivoLabel);
     doc.text(`${datos.objetivo}`, objetivoValueX, 20);
 
-    // 🕓 Fecha de elaboración (después de Objetivo)
-    const fechaActual = new Date().toLocaleDateString("es-AR"); // formato: dd/mm/yyyy
+    const fechaActual = new Date().toLocaleDateString("es-AR");
     const fechaLabel = " | Fecha de elaboración: ";
-    const fechaLabelX = objetivoValueX + doc.getTextWidth(`${datos.objetivo}`);
+    const fechaLabelX =
+      objetivoValueX + doc.getTextWidth(`${datos.objetivo}`);
     doc.setFont("helvetica", "normal");
     doc.text(fechaLabel, fechaLabelX, 20);
     doc.setFont("helvetica", "bold");
     const fechaValueX = fechaLabelX + doc.getTextWidth(fechaLabel);
     doc.text(`${fechaActual}`, fechaValueX, 20);
 
-    // 🧾 Cabecera de la tabla
+    // 🧾 Tabla
     const sesionesValidas = Number(cantidadSesiones) || 12;
     const headers = [
       "Ejercicio",
@@ -144,6 +148,41 @@ export const generarPDF = (
       },
     });
 
+    // ✅ Escala de Borg visual centrada
+    const finalY = doc.lastAutoTable.finalY + 10;
+    const centerX = doc.internal.pageSize.getWidth() / 2;
+    const emojiSize = 4; // milímetros
+
+    // Centrar texto
+    doc.setFontSize(11);
+    doc.setTextColor(0);
+    doc.setFont("helvetica", "bold");
+    const leyenda = "Escala de esfuerzo percibido";
+    const leyendaWidth = doc.getTextWidth(leyenda);
+    doc.text(leyenda, centerX - leyendaWidth / 2, finalY);
+
+    // Centrar imágenes e íconos debajo
+    const totalIcons = 3;
+    const spacing = 40;
+    const iconStartX = centerX - ((totalIcons - 1) * spacing) / 2;
+    const iconY = finalY + 5;
+    const labelY = iconY + 7;
+
+    const drawIcon = (imgSrc, x, label) => {
+      const img = new Image();
+      img.src = imgSrc;
+      doc.addImage(img, "PNG", x, iconY, emojiSize, emojiSize);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      const textWidth = doc.getTextWidth(label);
+      doc.text(label, x + emojiSize / 2 - textWidth / 2, labelY + 3);
+    };
+
+    drawIcon(happy, iconStartX, "Liviano(1-5)");
+    drawIcon(neutral, iconStartX + spacing, "Medio(6-7)");
+    drawIcon(bones, iconStartX + spacing * 2, "Pesado(8-10)");
+
+    // 👌 Listo
     callback(doc);
   };
 };
