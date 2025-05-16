@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 
-const FormularioEjercicio = ({ onAgregar, cantidadSesiones, agregarFilaFija }) => {
+const FormularioEjercicio = ({
+  onAgregar,
+  cantidadSesiones,
+  agregarFilaFija,
+  modoProgresion,
+  ejercicios,
+  setEjercicios
+}) => {
   const [nombre, setNombre] = useState('');
   const [peso, setPeso] = useState('');
   const [series, setSeries] = useState('');
@@ -24,43 +31,48 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones, agregarFilaFija }) =
     const sesiones = Array(cantidadSesiones).fill('');
     const s = parseInt(series);
     const incremento = parseFloat(incrementoPeso || 2.5);
+    let p = parseFloat(peso);
+    let r = parseInt(repsIniciales);
+    let seg = parseInt(repsIniciales);
 
-    if (isPlancha) {
-      let seg = parseInt(repsIniciales);
-      for (let i = inicioEnSesion - 1; i < cantidadSesiones; i++) {
-        sesiones[i] = `${s}x${seg}''`;
-        seg += 5;
+    if (modoProgresion === 'combinada') {
+      const esImpar = ejercicios.length % 2 === 0;
+
+      for (let i = 0; i < cantidadSesiones; i++) {
+        const esPosicionImpar = i % 2 === 0;
+
+        if ((esImpar && esPosicionImpar) || (!esImpar && !esPosicionImpar)) {
+          sesiones[i] = isPlancha ? `${s}x${seg}''` : `${p}kg ${s}x${r}`;
+          if (isPlancha) {
+            seg += 5;
+          } else {
+            if (r >= 10 && i < cantidadSesiones - 2) {
+              p += incremento;
+              r = parseInt(repsIniciales);
+            } else {
+              r += 2;
+            }
+          }
+        }
       }
     } else {
-      let p = parseFloat(peso);
-      let r = parseInt(repsIniciales);
-
       for (let i = inicioEnSesion - 1; i < cantidadSesiones; i++) {
-        sesiones[i] = `${p}kg ${s}x${r}`;
-        if (r >= 10 && i < cantidadSesiones - 1) {
-          p += incremento;
-          r = parseInt(repsIniciales);
+        sesiones[i] = isPlancha ? `${s}x${seg}''` : `${p}kg ${s}x${r}`;
+        if (isPlancha) {
+          seg += 5;
         } else {
-          r += 2;
+          if (r >= 10 && i < cantidadSesiones - 1) {
+            p += incremento;
+            r = parseInt(repsIniciales);
+          } else {
+            r += 2;
+          }
         }
       }
     }
 
     const nuevaFila = { ejercicio: nombre, sesiones };
-
-    onAgregar((prev) => {
-      const copia = [...prev];
-      const ultima = copia[copia.length - 1];
-
-      if (ultima && inicioEnSesion > 1) {
-        for (let i = inicioEnSesion - 1; i < cantidadSesiones; i++) {
-          ultima.sesiones[i] = sesiones[i];
-        }
-        return copia;
-      }
-
-      return [...prev, nuevaFila];
-    });
+    onAgregar((prev) => [...prev, nuevaFila]);
 
     setNombre('');
     setPeso('');
@@ -79,11 +91,8 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones, agregarFilaFija }) =
 
   return (
     <div className="p-6 rounded-xl bg-white dark:bg-[#1f1f1f] shadow-md mb-6 border-l-4 border-[#2AB0A1]">
-      <h3 className="text-lg font-semibold text-center text-[#2AB0A1] mb-4 dark:text-white">
-        Cargar nuevo ejercicio
-      </h3>
+      <h3 className="text-lg font-semibold text-center text-[#2AB0A1] mb-4 dark:text-white">Cargar nuevo ejercicio</h3>
 
-      {/* Entrada en Calor / Vuelta a la Calma */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
           <label className="text-sm font-semibold text-[#2AB0A1] dark:text-white">Entrada en Calor</label>
@@ -124,7 +133,6 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones, agregarFilaFija }) =
         </div>
       </div>
 
-      {/* Formulario progresión */}
       <form onSubmit={manejarEnvio} className="grid grid-cols-1 md:grid-cols-6 gap-4">
         <input
           type="text"
@@ -179,12 +187,8 @@ const FormularioEjercicio = ({ onAgregar, cantidadSesiones, agregarFilaFija }) =
             className="p-2 border rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
           />
         )}
-
         <div className="md:col-span-6 flex justify-center">
-          <button
-            type="submit"
-            className="bg-[#2AB0A1] hover:bg-[#218C85] text-white px-6 py-2 rounded-full font-semibold"
-          >
+          <button type="submit" className="bg-[#2AB0A1] hover:bg-[#218C85] text-white px-6 py-2 rounded-full font-semibold">
             Agregar
           </button>
         </div>
