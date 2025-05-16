@@ -1,7 +1,7 @@
 // src/components/TablaEjercicios.jsx
 import React from 'react';
 
-const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones }) => {
+const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones, modoProgresion }) => {
   const eliminarFila = (index) => {
     const nuevaLista = ejercicios.filter((_, i) => i !== index);
     setEjercicios(nuevaLista);
@@ -17,6 +17,13 @@ const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones }) => {
     setEjercicios(nuevaLista);
   };
 
+  // 🎨 Estilos condicionales por modo
+  const isCombinada = modoProgresion === 'combinada';
+
+  const colorCabecera = isCombinada ? '#3D1F2B' : '#2AB0A1';
+  const bgFilaPar = isCombinada ? 'bg-[#3D1F2B] dark:bg-[#3D1F2B]' : 'bg-gray-50 dark:bg-[#2c2c2c]';
+  const bgFilaImpar = isCombinada ? 'bg-[#3D1F2B] dark:bg-[#3D1F2B]' : 'dark:bg-[#1f1f1f]';
+
   const headers = [
     'Ejercicio',
     ...Array.from({ length: cantidadSesiones }, (_, i) => `Sesión ${i + 1}`),
@@ -24,10 +31,10 @@ const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones }) => {
   ];
 
   return (
-    <div className="overflow-x-auto bg-white dark:bg-[#1f1f1f] p-4 rounded-xl shadow-md mb-6">
+    <div className="overflow-x-auto p-4 rounded-xl shadow-md mb-6 bg-white dark:bg-[#1f1f1f]">
       <table className="w-full text-sm text-center border-collapse">
         <thead>
-          <tr className="bg-[#2AB0A1] text-white text-xs md:text-sm">
+          <tr style={{ backgroundColor: colorCabecera }} className="text-white text-xs md:text-sm">
             {headers.map((h, i) => (
               <th key={i} className="p-2 border">{h}</th>
             ))}
@@ -35,12 +42,14 @@ const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones }) => {
         </thead>
         <tbody>
           {ejercicios.map((fila, i) => (
-            <tr key={i} className={i % 2 === 0 ? 'bg-gray-50 dark:bg-[#2c2c2c]' : 'dark:bg-[#1f1f1f]'}>
+            <tr
+              key={i}
+              className={`${i % 2 === 0 ? bgFilaPar : bgFilaImpar}`}
+            >
               <td className="border p-1">
                 <input
                   type="text"
                   className="w-full bg-transparent text-center text-[#333] dark:text-white font-bold tracking-wide focus:outline-none"
-
                   value={fila.ejercicio}
                   onChange={(e) => actualizarCelda(i, 0, e.target.value)}
                 />
@@ -50,7 +59,6 @@ const TablaEjercicios = ({ ejercicios, setEjercicios, cantidadSesiones }) => {
                   <input
                     type="text"
                     className="w-full bg-transparent text-center text-[#333] dark:text-white font-bold tracking-wide focus:outline-none"
-
                     value={fila.sesiones[j] || ''}
                     onChange={(e) => actualizarCelda(i, j + 1, e.target.value)}
                   />

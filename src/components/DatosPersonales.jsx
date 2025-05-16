@@ -18,7 +18,7 @@ const DatosPersonales = ({ datos, setDatos }) => {
       confirmButtonText: 'Guardar',
       cancelButtonText: 'Cancelar',
       showCancelButton: true,
-      background: '#191825',
+      background: '#264653',
       color: '#FAF1E6',
       confirmButtonColor: '#2AB0A1',
       cancelButtonColor: '#E966A0',
@@ -70,7 +70,7 @@ const DatosPersonales = ({ datos, setDatos }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-[#1f1f1f] p-6 rounded-xl shadow-md mb-6 border-l-4 border-[#2AB0A1]">
+    <div className="bg-white dark:bg-[#264653] p-6 rounded-xl shadow-md mb-6 border-l-4 border-[#2AB0A1]">
       <p className="text-lg text-[#333] dark:text-white">
         Apellido y Nombre: <span className="font-bold">{datos.nombre}</span>
       </p>

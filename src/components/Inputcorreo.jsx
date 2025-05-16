@@ -4,7 +4,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { generarPDF } from '../utils/generarPDF';
 
-const InputCorreo = ({ datos, ejercicios, cantidadSesiones }) => {
+const InputCorreo = ({ datos, ejercicios, cantidadSesiones, modoProgresion }) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -28,39 +28,45 @@ const InputCorreo = ({ datos, ejercicios, cantidadSesiones }) => {
     setLoading(true);
 
     try {
-      generarPDF(datos, ejercicios, async (doc) => {
-        const pdfBlob = doc.output('blob');
-        const formData = new FormData();
-        formData.append('emailDestino', email);
-        formData.append('pdf', pdfBlob, 'Planilla_Ejercicios.pdf');
+      generarPDF(
+        datos,
+        ejercicios,
+        async (doc) => {
+          const pdfBlob = doc.output('blob');
+          const formData = new FormData();
+          formData.append('emailDestino', email);
+          formData.append('pdf', pdfBlob, 'Planilla_Ejercicios.pdf');
 
-        const response = await axios.post(
-          `${import.meta.env.VITE_BACKEND_URL}/api/correo/email`,
-          formData,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
+          const response = await axios.post(
+            `${import.meta.env.VITE_BACKEND_URL}/api/correo/email`,
+            formData,
+            {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            }
+          );
+
+          if (response.status === 200) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Correo enviado',
+              text: '✅ La planilla fue enviada con éxito.',
+              ...estiloSwal,
+            });
+            setEmail('');
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: '❌ Ocurrió un error al enviar el correo.',
+              ...estiloSwal,
+            });
           }
-        );
 
-        if (response.status === 200) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Correo enviado',
-            text: '✅ La planilla fue enviada con éxito.',
-            ...estiloSwal,
-          });
-          setEmail('');
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: '❌ Ocurrió un error al enviar el correo.',
-            ...estiloSwal,
-          });
-        }
-
-        setLoading(false);
-      }, cantidadSesiones); // ✅ PASAMOS LA CANTIDAD DE SESIONES AQUÍ
+          setLoading(false);
+        },
+        cantidadSesiones,
+        modoProgresion // ✅ Aquí le pasamos el modo
+      );
     } catch (error) {
       console.error('Error al enviar:', error);
       Swal.fire({
@@ -90,7 +96,7 @@ const InputCorreo = ({ datos, ejercicios, cantidadSesiones }) => {
           loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#218C85]'
         }`}
       >
-        {loading ? (
+        {loading && (
           <svg
             className="animate-spin h-5 w-5 text-white mr-2"
             viewBox="0 0 24 24"
@@ -110,7 +116,7 @@ const InputCorreo = ({ datos, ejercicios, cantidadSesiones }) => {
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
             />
           </svg>
-        ) : null}
+        )}
         {loading ? 'Enviando...' : 'Enviar por Email'}
       </button>
     </div>

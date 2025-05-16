@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
-import TablaEjercicios from './components/TablaEjercicios';
-import NavBar from './UI/NavBar';
-import ExportarPDF from './utils/ExportarPDF';
-import Inputcorreo from './components/Inputcorreo';
-import DatosPersonales from './components/DatosPersonales';
-import Footer from './UI/Footer';
-import FormularioEjercicios from './components/FormulariosEjercicios';
+import React, { useState } from "react";
+import TablaEjercicios from "./components/TablaEjercicios";
+import NavBar from "./UI/NavBar";
+import ExportarPDF from "./utils/ExportarPDF";
+import Inputcorreo from "./components/Inputcorreo";
+import DatosPersonales from "./components/DatosPersonales";
+import Footer from "./UI/Footer";
+import FormularioEjercicios from "./components/FormulariosEjercicios";
 
 function App() {
-  const [datos, setDatos] = useState({ nombre: '', edad: '', peso: '', objetivo: '' });
+  const [datos, setDatos] = useState({
+    nombre: "",
+    edad: "",
+    peso: "",
+    objetivo: "",
+  });
   const [ejercicios, setEjercicios] = useState([]);
   const [cantidadSesiones, setCantidadSesiones] = useState(6);
-  const [modoProgresion, setModoProgresion] = useState('lineal'); // 'lineal' o 'combinada'
+  const [modoProgresion, setModoProgresion] = useState("lineal"); // 'lineal' o 'combinada'
 
   const agregarFilaFija = (fila) => {
     setEjercicios((prev) => {
@@ -32,7 +37,9 @@ function App() {
         <DatosPersonales datos={datos} setDatos={setDatos} />
 
         <div className="flex justify-center items-center gap-4 mb-6">
-          <label className="text-[#2AB0A1] font-semibold">Cantidad de sesiones:</label>
+          <label className="text-[#2AB0A1] font-semibold">
+            Cantidad de sesiones:
+          </label>
           <select
             value={cantidadSesiones}
             onChange={(e) => setCantidadSesiones(parseInt(e.target.value))}
@@ -44,14 +51,16 @@ function App() {
         </div>
 
         <div className="flex justify-center items-center gap-4 mb-6">
-          <label className="text-[#2AB0A1] font-semibold">Tipo de progresión:</label>
+          <label className="text-[#2AB0A1] font-semibold">
+            Tipo de progresión:
+          </label>
           <select
             value={modoProgresion}
             onChange={(e) => setModoProgresion(e.target.value)}
             className="p-2 border border-[#2AB0A1] rounded-lg bg-white dark:bg-gray-800 text-[#333] dark:text-white"
           >
             <option value="lineal">Sesiones lineales</option>
-            <option value="combinada">Días pares e impares</option>
+            <option value="combinada">Sesiones Combinadas</option>
           </select>
         </div>
 
@@ -68,11 +77,22 @@ function App() {
           ejercicios={ejercicios}
           setEjercicios={setEjercicios}
           cantidadSesiones={cantidadSesiones}
+          modoProgresion={modoProgresion}
         />
 
         <div className="flex justify-center gap-4 mt-6">
-          <ExportarPDF datos={datos} ejercicios={ejercicios} cantidadSesiones={cantidadSesiones} />
-          <Inputcorreo datos={datos} ejercicios={ejercicios} cantidadSesiones={cantidadSesiones} />
+          <ExportarPDF
+            datos={datos}
+            ejercicios={ejercicios}
+            cantidadSesiones={cantidadSesiones}
+            modoProgresion={modoProgresion}
+          />
+          <Inputcorreo
+            datos={datos}
+            ejercicios={ejercicios}
+            cantidadSesiones={cantidadSesiones}
+            modoProgresion={modoProgresion}
+          />
         </div>
       </main>
       <Footer />

@@ -1,3 +1,4 @@
+// src/utils/generarPDF.js
 import React from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -10,7 +11,8 @@ export const generarPDF = (
   datos,
   ejercicios,
   callback,
-  cantidadSesiones = 12
+  cantidadSesiones = 12,
+  modoProgresion = "lineal"
 ) => {
   const doc = new jsPDF({ orientation: "landscape" });
 
@@ -22,7 +24,6 @@ export const generarPDF = (
     const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
     const pageWidth = doc.internal.pageSize.getWidth();
 
-    // 👉 Logo alineado a la derecha
     doc.addImage(
       logoImg,
       "PNG",
@@ -32,10 +33,9 @@ export const generarPDF = (
       logoHeight
     );
 
-    // 🎯 Datos personales
+    // 🧾 Datos personales
     doc.setFontSize(11);
     doc.setTextColor(0, 0, 0);
-
     doc.setFont("helvetica", "normal");
     doc.text("Apellido y Nombre: ", 14, 20);
     const nombreX = 14 + doc.getTextWidth("Apellido y Nombre: ");
@@ -77,15 +77,14 @@ export const generarPDF = (
 
     const fechaActual = new Date().toLocaleDateString("es-AR");
     const fechaLabel = " | Fecha de elaboración: ";
-    const fechaLabelX =
-      objetivoValueX + doc.getTextWidth(`${datos.objetivo}`);
+    const fechaLabelX = objetivoValueX + doc.getTextWidth(`${datos.objetivo}`);
     doc.setFont("helvetica", "normal");
     doc.text(fechaLabel, fechaLabelX, 20);
     doc.setFont("helvetica", "bold");
     const fechaValueX = fechaLabelX + doc.getTextWidth(fechaLabel);
     doc.text(`${fechaActual}`, fechaValueX, 20);
 
-    // 🧾 Tabla
+    // Tabla de ejercicios
     const sesionesValidas = Number(cantidadSesiones) || 12;
     const headers = [
       "Ejercicio",
@@ -109,6 +108,12 @@ export const generarPDF = (
 
     const fechaRowIndex = 0;
 
+    // 🎨 Color de encabezado según el modo de progresión
+    const encabezadoColor =
+      modoProgresion === "combinada"
+        ? [61, 31, 43] // RGB de #712a46
+        : [42, 176, 161]; // RGB de #2AB0A1
+
     autoTable(doc, {
       startY: 28,
       head: [headers],
@@ -122,7 +127,7 @@ export const generarPDF = (
         lineWidth: 0.5,
       },
       headStyles: {
-        fillColor: [42, 176, 161],
+        fillColor: encabezadoColor,
         textColor: 255,
         fontStyle: "bold",
         halign: "center",
@@ -148,12 +153,11 @@ export const generarPDF = (
       },
     });
 
-    // ✅ Escala de Borg visual centrada
+    // Escala de Borg
     const finalY = doc.lastAutoTable.finalY + 10;
     const centerX = doc.internal.pageSize.getWidth() / 2;
-    const emojiSize = 4; // milímetros
+    const emojiSize = 4;
 
-    // Centrar texto
     doc.setFontSize(11);
     doc.setTextColor(0);
     doc.setFont("helvetica", "bold");
@@ -161,7 +165,6 @@ export const generarPDF = (
     const leyendaWidth = doc.getTextWidth(leyenda);
     doc.text(leyenda, centerX - leyendaWidth / 2, finalY);
 
-    // Centrar imágenes e íconos debajo
     const totalIcons = 3;
     const spacing = 40;
     const iconStartX = centerX - ((totalIcons - 1) * spacing) / 2;
@@ -182,7 +185,7 @@ export const generarPDF = (
     drawIcon(neutral, iconStartX + spacing, "Medio(6-7)");
     drawIcon(bones, iconStartX + spacing * 2, "Pesado(8-10)");
 
-    // 👌 Listo
+    // 📤 Final
     callback(doc);
   };
 };
